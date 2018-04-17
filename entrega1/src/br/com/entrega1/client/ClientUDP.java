@@ -8,35 +8,59 @@ import java.net.InetAddress;
 
 import br.com.entrega1.configuration.Configuration;
 import br.com.entrega1.configuration.SocketSetting;
-import br.com.entrega1.utils.ByteFiller;
 
 public class ClientUDP {
 
 	public static void main( String[] args ) {
 
 		try {
-
+			
+			//Context.load( Paths.get( "resources/log/log.txt" ) );
+			
+			/**
+			 * Criação das configurações externas dos sockets (cliente/servidor)
+			 */
 			SocketSetting serverSettings = Configuration.serverSettings();
 			SocketSetting mySettings = Configuration.clientSettings();
+			
+			RecieveThread recieveThread = new RecieveThread( mySettings );
+			new Thread( recieveThread ).start();
 
+			/**
+			 * Tradução de uma String HOST para a classe InetAddress
+			 */
 			InetAddress addr = InetAddress.getByName( serverSettings.getHost() );
 
 			while( true ) {
-			
-				byte[] receiveData = new byte[ 4000 ];
-				byte[] sendData = new byte[ 4000 ];
 				
+				System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
+				System.out.println( "OPERACAO: INSERT/UPDATE/DELETE" );
+				System.out.println( "CHAVE: BigInteger" );
+				System.out.println( "VALOR: String" );
+				/**
+				 * Leitor do buffer do console
+				 */
 				BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
 				String sentence = inFromUser.readLine();
-				ByteFiller.fillByteArray( sendData, sentence );
+				byte[] my = sentence.getBytes();
 	
-				DatagramPacket pkg = new DatagramPacket( sendData, sendData.length, addr, serverSettings.getPort() );
+				/**
+				 * Criação do datagrama IP
+				 */
+				DatagramPacket pkg = new DatagramPacket( my, my.length, addr, serverSettings.getPort() );
 				DatagramSocket ds = new DatagramSocket();
-	
-				ds.send( pkg );
-				System.out.println(
-					"Mensagem enviada para: " + addr.getHostAddress() + "\n" + "Porta: " + serverSettings.getPort() + "\n"
-						+ "Mensagem: " + sentence );
+				
+				if( pkg.getData().length > 4000 ) {
+					System.out.println( "Mensagem maior do que 4000 bytes" );
+				} else {
+					/**
+					 * Envio do datagrama
+					 */
+					ds.send( pkg );
+					System.out.println(
+						"Mensagem enviada para: " + addr.getHostAddress() + "\n" + "Porta: " + serverSettings.getPort() + "\n"
+							+ "Mensagem: " + sentence );
+				}
 	
 				ds.close();
 			
@@ -47,10 +71,6 @@ public class ClientUDP {
 		catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
-	}
-	
-	private void fillByteArray( byte[] bytes, String sentence ) {
-		
 	}
 
 }

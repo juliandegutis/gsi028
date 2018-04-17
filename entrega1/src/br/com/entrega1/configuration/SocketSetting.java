@@ -1,5 +1,10 @@
 package br.com.entrega1.configuration;
 
+/**
+ * Classe para a configuração dos sockets
+ * @author juliang
+ *
+ */
 public class SocketSetting {
 
 	private String host;

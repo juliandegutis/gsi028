@@ -5,6 +5,11 @@ import java.util.Queue;
 
 import br.com.entrega1.file.FileWriter;
 
+/**
+ * Thread executora da escrita em Log
+ * @author juliang
+ *
+ */
 public class LogThread implements Runnable {
 	
 	private final String LOG_PATH = "resources/log/log.txt";
@@ -17,8 +22,7 @@ public class LogThread implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
-						
+		try {					
 			while( true ) {
 				String log = logQueue.poll();
 				if( log != null ) {

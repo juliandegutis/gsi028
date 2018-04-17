@@ -12,8 +12,18 @@ import org.w3c.dom.NodeList;
 
 import br.com.entrega1.configuration.SocketSetting;
 
+/**
+ * Abstração para a leitura de arquivos
+ * @author juliang
+ *
+ */
 public class FileReader {
 
+	/**
+	 * Le o arquivo de configuração XML
+	 * @param file
+	 * @return SocketSetting
+	 */
 	public static SocketSetting readXMLConfiguration( File file ) {
 
 		try {
@@ -27,8 +37,6 @@ public class FileReader {
 			NodeList nList = doc.getElementsByTagName( "server" );
 
 			Node nNode = nList.item( 0 );
-
-			System.out.println( "\nCurrent Element :" + nNode.getNodeName() );
 
 			if ( nNode.getNodeType() == Node.ELEMENT_NODE ) {
 
