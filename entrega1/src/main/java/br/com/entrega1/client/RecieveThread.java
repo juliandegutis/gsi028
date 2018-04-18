@@ -3,24 +3,19 @@ package br.com.entrega1.client;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-import br.com.entrega1.configuration.SocketSetting;
-
 public class RecieveThread implements Runnable {
 
-	private SocketSetting settings;
 	private DatagramSocket serverSocket;
 	
-	public RecieveThread( SocketSetting settings ) {
+	public RecieveThread( DatagramSocket socket ) {
 		super();
-		this.settings = settings;
+		this.serverSocket = socket;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			
-			serverSocket = new DatagramSocket( settings.getPort() );
-			
+						
 			while( true ) {
 				
 				byte[] receiveData = new byte[ 4000 ];
@@ -42,7 +37,7 @@ public class RecieveThread implements Runnable {
 		        System.arraycopy( receivePacket.getData(), receivePacket.getOffset(), data, 0, receivePacket.getLength() );
 				String sentence = new String( data );
 				
-				System.out.println( "Comando executado pelo servidor: " + sentence );
+				System.out.println( sentence );
 			
 			}
 			

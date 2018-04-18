@@ -23,7 +23,9 @@ public class ClientUDP {
 			SocketSetting serverSettings = Configuration.serverSettings();
 			SocketSetting mySettings = Configuration.clientSettings();
 			
-			RecieveThread recieveThread = new RecieveThread( mySettings );
+			DatagramSocket ds = new DatagramSocket( mySettings.getPort() );
+			
+			RecieveThread recieveThread = new RecieveThread( ds );
 			new Thread( recieveThread ).start();
 
 			/**
@@ -48,9 +50,8 @@ public class ClientUDP {
 				 * Criação do datagrama IP
 				 */
 				DatagramPacket pkg = new DatagramPacket( my, my.length, addr, serverSettings.getPort() );
-				DatagramSocket ds = new DatagramSocket();
 				
-				if( pkg.getData().length > 4000 ) {
+				if( pkg.getData().length > 1400 ) {
 					System.out.println( "Mensagem maior do que 4000 bytes" );
 				} else {
 					/**
@@ -61,9 +62,7 @@ public class ClientUDP {
 						"Mensagem enviada para: " + addr.getHostAddress() + "\n" + "Porta: " + serverSettings.getPort() + "\n"
 							+ "Mensagem: " + sentence );
 				}
-	
-				ds.close();
-			
+				
 			}
 
 		}

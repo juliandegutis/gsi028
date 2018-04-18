@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import br.com.entrega1.configuration.Configuration;
 import br.com.entrega1.configuration.SocketSetting;
+import br.com.entrega1.context.Context;
 
 /**
  * Servidor UDP
@@ -21,12 +22,15 @@ public class ServerUDP {
 	private static DatagramSocket serverSocket;
 	private static SocketSetting mySettings;
 	private static Queue< String > logQueue = new LinkedList< String >();
+	private static Queue< String > executeQueue = new LinkedList< String >();
+	private static Context context;
 
 	public static void main( String args[] ) throws Exception {
 		
 		/**
 		 * Externalização das configurações
 		 */
+		context = new Context();
 		mySettings = Configuration.serverSettings();
 		serverSocket = new DatagramSocket( mySettings.getPort() );
 		
@@ -36,10 +40,13 @@ public class ServerUDP {
 		LogThread log = new LogThread( logQueue );
 		new Thread( log ).start();
 		
+		ExecutorThread executor = new ExecutorThread( logQueue, executeQueue, context );
+		new Thread( executor ).start();
+		
 		while ( true ) {
 			
-			byte[] receiveData = new byte[ 4000 ];
-			byte[] sendData = new byte[ 4000 ];
+			byte[] receiveData = new byte[ 1400 ];
+			byte[] sendData = new byte[ 1400 ];
 			
 			/**
 			 * Recebe o datagrama do cliente
@@ -63,15 +70,15 @@ public class ServerUDP {
 			/**
 			 * Adiciona a mensagem na fila do log.
 			 */
-			messageToLog( sentence );
+			messageToQueue( sentence );
 			
 			/**
 			 * Envia a confirmação de recebimento para o cliente.
 			 */
 			InetAddress IPAddress = receivePacket.getAddress();
 			int port = receivePacket.getPort();
-			String recieved = sentence.toUpperCase();
-			sendData = recieved.getBytes();
+			String sendBack = "Executado o comando " + sentence;
+			sendData = sendBack.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket( sendData, sendData.length, IPAddress, port );
 			serverSocket.send( sendPacket );
 			
@@ -82,17 +89,18 @@ public class ServerUDP {
 	 * Trata a mensagem e adiciona na fila de log
 	 * @param message
 	 */
-	private static void messageToLog( String message ) {
+	private static void messageToQueue( String message ) {
 		List< String > list = new LinkedList< String >( Arrays.asList( message.split( " " ) ) );
-		String header = list.get( 0 );
-		list.remove( 0 );
 		String operation = list.get( 0 );
+		list.remove( 0 );
+		String header = list.get( 0 );
 		list.remove( 0 );
 		String log = "";
 		for( String current : list ) {
 			log = log.concat( current + " " );
 		}
 		
-		logQueue.add( header + ";" + operation.toUpperCase() + ";" + log );
+		executeQueue.add( operation.toUpperCase() + ";" + header + ";" + log.substring( 0, log.length() - 1 ) );
+		
 	}
 }

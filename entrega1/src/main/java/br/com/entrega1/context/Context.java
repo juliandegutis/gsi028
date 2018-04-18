@@ -18,26 +18,25 @@ import br.com.entrega1.enums.Operation;
  */
 public class Context {
 
-	private static Map< BigInteger, Object > context;
+	private Map< BigInteger, Object > context;
 	
-	public static void start() {
-		context = new LinkedHashMap< BigInteger, Object >();
+	public Context() {
+		this.context = new LinkedHashMap< BigInteger, Object >();
 	}
 	
-	public static void put( BigInteger key, Object object ) {
+	public void put( BigInteger key, Object object ) {
 		context.put( key, object );
 	}
 	
-	public static void remove( BigInteger key ) {
+	public void remove( BigInteger key ) {
 		context.remove( key );
 	}
 	
-	public static void load( Path path ) throws IOException {
-		start();
+	public void load( Path path ) throws IOException {
 		Files.lines( path ).forEach( (line) -> load( line ) );
 	}
 	
-	public static void load( String line ) {
+	public void load( String line ) {
 		List< String > list = Arrays.asList( line.split( ";" ) );
 		
 		if( Operation.INSERT.name().equals( list.get( 1 ) ) ) {
@@ -47,6 +46,14 @@ public class Context {
 		} else if( Operation.DELETE.name().equals( list.get( 1 ) ) ) {
 			context.remove( new BigInteger( list.get( 0 ) ) );
 		}
+	}
+	
+	public String stringfy() {
+		String toString = "";
+		for( Map.Entry< BigInteger, Object > entry : context.entrySet() ) {
+			toString = toString.concat( "(" + entry.getKey().toString() + "," + entry.getValue().toString() + ")" );
+		}
+		return toString;
 	}
 	
 }

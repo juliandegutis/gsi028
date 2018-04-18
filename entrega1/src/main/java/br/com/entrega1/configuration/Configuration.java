@@ -11,8 +11,8 @@ import br.com.entrega1.file.FileReader;
  */
 public class Configuration {
 
-	private final static String SERVER_SETTINGS = "resources/config/server.xml";
-	private final static String CLIENT_SETTINGS = "resources/config/client.xml";
+	private final static String SERVER_SETTINGS = "src/main/resources/config/server.xml";
+	private final static String CLIENT_SETTINGS = "src/main/resources/config/client.xml";
 	
 	/**
 	 * Leitura do XML do servidor

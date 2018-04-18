@@ -1,6 +1,5 @@
 package br.com.entrega1.server;
 
-import java.util.LinkedList;
 import java.util.Queue;
 
 import br.com.entrega1.file.FileWriter;
@@ -13,7 +12,7 @@ import br.com.entrega1.file.FileWriter;
 public class LogThread implements Runnable {
 	
 	private final String LOG_PATH = "resources/log/log.txt";
-	private Queue< String > logQueue = new LinkedList< String >();
+	private Queue< String > logQueue;
 	
 	public LogThread( Queue< String > queue ) {
 		super();
