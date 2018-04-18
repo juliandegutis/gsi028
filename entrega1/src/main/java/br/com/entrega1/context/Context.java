@@ -39,12 +39,12 @@ public class Context {
 	public void load( String line ) {
 		List< String > list = Arrays.asList( line.split( ";" ) );
 		
-		if( Operation.INSERT.name().equals( list.get( 1 ) ) ) {
-			context.put( new BigInteger( list.get( 0 ) ), list.get( 2 ) );
-		} else if( Operation.UPDATE.name().equals( list.get( 1 ) ) ) {
-			context.put( new BigInteger( list.get( 0 ) ), list.get( 2 ) );
-		} else if( Operation.DELETE.name().equals( list.get( 1 ) ) ) {
-			context.remove( new BigInteger( list.get( 0 ) ) );
+		if( Operation.INSERT.name().equals( list.get( 0 ) ) ) {
+			context.put( new BigInteger( list.get( 1 ) ), list.get( 2 ) );
+		} else if( Operation.UPDATE.name().equals( list.get( 0 ) ) ) {
+			context.put( new BigInteger( list.get( 1 ) ), list.get( 2 ) );
+		} else if( Operation.DELETE.name().equals( list.get( 0 ) ) ) {
+			context.remove( new BigInteger( list.get( 1 ) ) );
 		}
 	}
 	

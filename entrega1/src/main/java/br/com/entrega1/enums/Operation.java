@@ -9,7 +9,8 @@ public enum Operation {
 
 	INSERT( "INSERT" ), 
 	DELETE( "DELETE" ),
-	UPDATE( "UPDATE" );
+	UPDATE( "UPDATE" ),
+	RETURN( "RETURN" );
 	
 	private String value;
 	

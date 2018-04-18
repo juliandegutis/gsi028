@@ -3,6 +3,7 @@ package br.com.entrega1.server;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Queue;
 import br.com.entrega1.configuration.Configuration;
 import br.com.entrega1.configuration.SocketSetting;
 import br.com.entrega1.context.Context;
+import br.com.entrega1.enums.Operation;
 
 /**
  * Servidor UDP
@@ -31,6 +33,7 @@ public class ServerUDP {
 		 * Externalização das configurações
 		 */
 		context = new Context();
+		context.load( Paths.get( "src/main/resources/log/log.txt" ) );
 		mySettings = Configuration.serverSettings();
 		serverSocket = new DatagramSocket( mySettings.getPort() );
 		
@@ -40,7 +43,7 @@ public class ServerUDP {
 		LogThread log = new LogThread( logQueue );
 		new Thread( log ).start();
 		
-		ExecutorThread executor = new ExecutorThread( logQueue, executeQueue, context );
+		ExecutorThread executor = new ExecutorThread( serverSocket, logQueue, executeQueue, context );
 		new Thread( executor ).start();
 		
 		while ( true ) {
@@ -70,7 +73,7 @@ public class ServerUDP {
 			/**
 			 * Adiciona a mensagem na fila do log.
 			 */
-			messageToQueue( sentence );
+			messageToQueue( sentence, receivePacket.getAddress(), receivePacket.getPort() );
 			
 			/**
 			 * Envia a confirmação de recebimento para o cliente.
@@ -89,18 +92,29 @@ public class ServerUDP {
 	 * Trata a mensagem e adiciona na fila de log
 	 * @param message
 	 */
-	private static void messageToQueue( String message ) {
+	private static void messageToQueue( String message, InetAddress recieveAddress, int recievePort ) {
+		
 		List< String > list = new LinkedList< String >( Arrays.asList( message.split( " " ) ) );
 		String operation = list.get( 0 );
-		list.remove( 0 );
-		String header = list.get( 0 );
-		list.remove( 0 );
-		String log = "";
-		for( String current : list ) {
-			log = log.concat( current + " " );
+		
+		if( Operation.RETURN.name().equals( operation ) ) {
+			executeQueue.add( operation + ";" + recieveAddress.toString() + ";" + String.valueOf( recievePort ) );
+		} else {
+			
+			list.remove( 0 );
+			String header = list.get( 0 );
+			list.remove( 0 );
+			
+			if( Operation.DELETE.name().equals( operation ) ) {
+				executeQueue.add( operation.toUpperCase() + ";" + header );
+			} else {
+				String log = "";
+				for( String current : list ) {
+					log = log.concat( current + " " );
+				}
+				executeQueue.add( operation.toUpperCase() + ";" + header + ";" + log.substring( 0, log.length() - 1 ) );
+			}
+				
 		}
-		
-		executeQueue.add( operation.toUpperCase() + ";" + header + ";" + log.substring( 0, log.length() - 1 ) );
-		
 	}
 }

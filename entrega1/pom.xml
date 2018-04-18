@@ -5,6 +5,7 @@
 	<artifactId>entrega1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
+		<finalName>entrega1</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources/config</directory>
