@@ -5,6 +5,6 @@ Integrantes:
 
 Julian Degutis de Freitas Garcia - 11221BSI212
 
-Rafael Soares Araújo -
+Rafael Soares Araújo - 11311BSI286
 
-Mauro Júnior -
+Mauro Humberto - 11311BSI287
