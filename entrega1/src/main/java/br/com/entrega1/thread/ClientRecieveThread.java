@@ -1,13 +1,13 @@
-package br.com.entrega1.client;
+package br.com.entrega1.thread;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class RecieveThread implements Runnable {
+public class ClientRecieveThread implements Runnable {
 
 	private DatagramSocket serverSocket;
 	
-	public RecieveThread( DatagramSocket socket ) {
+	public ClientRecieveThread( DatagramSocket socket ) {
 		super();
 		this.serverSocket = socket;
 	}
@@ -45,5 +45,6 @@ public class RecieveThread implements Runnable {
 			ex.printStackTrace();
 		}
 	}
+	
 
 }

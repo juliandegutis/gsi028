@@ -11,15 +11,14 @@ import java.util.List;
 import br.com.entrega1.configuration.Configuration;
 import br.com.entrega1.configuration.SocketSetting;
 import br.com.entrega1.enums.Operation;
+import br.com.entrega1.thread.ClientRecieveThread;
 
 public class ClientUDP {
 
 	public static void main( String[] args ) {
 
 		try {
-			
-			//Context.load( Paths.get( "resources/log/log.txt" ) );
-			
+						
 			/**
 			 * Criação das configurações externas dos sockets (cliente/servidor)
 			 */
@@ -28,7 +27,7 @@ public class ClientUDP {
 			
 			DatagramSocket ds = new DatagramSocket( mySettings.getPort() );
 			
-			RecieveThread recieveThread = new RecieveThread( ds );
+			ClientRecieveThread recieveThread = new ClientRecieveThread( ds );
 			new Thread( recieveThread ).start();
 
 			/**
@@ -83,8 +82,8 @@ public class ClientUDP {
 		
 		List< String > params = Arrays.asList( sentence.split( " " ) );
 		
-		if( !Operation.DELETE.name().equals( params.get( 0 ) ) ||
-			!Operation.INSERT.name().equals( params.get( 0 ) ) ||
+		if( !Operation.DELETE.name().equals( params.get( 0 ) ) &&
+			!Operation.INSERT.name().equals( params.get( 0 ) ) &&
 			!Operation.UPDATE.name().equals( params.get( 0 ) )) {
 			System.out.println( "Operacao Invalida." );
 			return Boolean.FALSE;

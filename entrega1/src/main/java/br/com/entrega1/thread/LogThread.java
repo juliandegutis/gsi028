@@ -1,4 +1,4 @@
-package br.com.entrega1.server;
+package br.com.entrega1.thread;
 
 import java.util.Queue;
 
@@ -11,22 +11,24 @@ import br.com.entrega1.file.FileWriter;
  */
 public class LogThread implements Runnable {
 	
-	private final String LOG_PATH = "resources/log/log.txt";
+	private final String LOG_PATH = "src/main/resources/log/log.txt";
 	private Queue< String > logQueue;
 	
 	public LogThread( Queue< String > queue ) {
-		super();
 		this.logQueue = queue;
 	}
 	
 	@Override
 	public void run() {
-		try {					
+		try {		
+			
 			while( true ) {
 				String log = logQueue.poll();
 				if( log != null ) {
+					System.out.println( "Salvando para o log: " + log );
 					FileWriter.writeToFile( LOG_PATH, log );	
 				}
+				Thread.sleep( 1 );
 			}
 			
 		} catch( Exception ex ) {
