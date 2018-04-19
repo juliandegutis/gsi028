@@ -38,6 +38,8 @@ public class ClientRecieveThread implements Runnable {
 				String sentence = new String( data );
 				
 				System.out.println( sentence );
+				
+				Thread.sleep( 1 );
 			
 			}
 			

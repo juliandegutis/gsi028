@@ -3,9 +3,11 @@ br\com\entrega1\context\Context.class
 br\com\entrega1\configuration\Configuration.class
 br\com\entrega1\file\FileReader.class
 br\com\entrega1\enums\Operation.class
-br\com\entrega1\client\RecieveThread.class
+br\com\entrega1\thread\LogThread.class
 br\com\entrega1\file\FileWriter.class
 br\com\entrega1\server\ServerUDP.class
-br\com\entrega1\server\ExecutorThread.class
+br\com\entrega1\thread\ClientSenderThread.class
 br\com\entrega1\client\ClientUDP.class
-br\com\entrega1\server\LogThread.class
+br\com\entrega1\thread\ClientRecieveThread.class
+br\com\entrega1\thread\ServerRecieveThread.class
+br\com\entrega1\thread\ExecutorThread.class

@@ -65,7 +65,9 @@ public class ClientSenderThread implements Runnable {
 						}
 
 					}
-
+					
+					Thread.sleep( 1 );
+					
 				}
 
 			} catch ( Exception ex ) {
@@ -81,7 +83,7 @@ public class ClientSenderThread implements Runnable {
 		List< String > params = Arrays.asList( sentence.split( " " ) );
 
 		if ( !Operation.DELETE.name().equals( params.get( 0 ) ) && !Operation.INSERT.name().equals( params.get( 0 ) )
-			&& !Operation.UPDATE.name().equals( params.get( 0 ) ) ) {
+			&& !Operation.UPDATE.name().equals( params.get( 0 ) ) && !Operation.RETURN.name().equals( params.get( 0 ) ) ) {
 			System.out.println( "Operacao Invalida." );
 			return Boolean.FALSE;
 		} else {

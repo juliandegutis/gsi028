@@ -1,20 +1,26 @@
 package br.com.entrega1.client;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import br.com.entrega1.configuration.Configuration;
 import br.com.entrega1.configuration.SocketSetting;
 import br.com.entrega1.enums.Operation;
 import br.com.entrega1.thread.ClientRecieveThread;
+import br.com.entrega1.thread.ClientSenderThread;
 
 public class ClientUDP {
 
+	private static SocketSetting serverSettings;
+	private static SocketSetting mySettings;
+	private static DatagramSocket ds;
+	private static ExecutorService executor;
+
+	
 	public static void main( String[] args ) {
 
 		try {
@@ -22,54 +28,60 @@ public class ClientUDP {
 			/**
 			 * Criação das configurações externas dos sockets (cliente/servidor)
 			 */
-			SocketSetting serverSettings = Configuration.serverSettings();
-			SocketSetting mySettings = Configuration.clientSettings();
-			
-			DatagramSocket ds = new DatagramSocket( mySettings.getPort() );
-			
-			ClientRecieveThread recieveThread = new ClientRecieveThread( ds );
-			new Thread( recieveThread ).start();
+			serverSettings = Configuration.serverSettings();
+			mySettings = Configuration.clientSettings();
+			ds = new DatagramSocket( mySettings.getPort() );
+			executor = Executors.newFixedThreadPool(50);
 
 			/**
 			 * Tradução de uma String HOST para a classe InetAddress
 			 */
 			InetAddress addr = InetAddress.getByName( serverSettings.getHost() );
+			
+			/**
+			 * Instanciando as Threads
+			 */
+			ClientRecieveThread recieveThread = new ClientRecieveThread( ds );
+			ClientSenderThread senderThread = new ClientSenderThread( ds, addr, serverSettings );
+			
+			executor.execute( recieveThread );
+			executor.execute( senderThread );
 
-			while( true ) {
-				
-				System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
-				System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
-				System.out.println( "CHAVE: BigInteger" );
-				System.out.println( "VALOR: String" );
-				/**
-				 * Leitor do buffer do console
-				 */
-				BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
-				String sentence = inFromUser.readLine();
-				if( validate( sentence ) ) {
-					
-					byte[] my = sentence.getBytes();
-		
-					/**
-					 * Criação do datagrama IP
-					 */
-					DatagramPacket pkg = new DatagramPacket( my, my.length, addr, serverSettings.getPort() );
-					
-					if( pkg.getData().length > 1400 ) {
-						System.out.println( "Mensagem maior do que 4000 bytes" );
-					} else {
-						/**
-						 * Envio do datagrama
-						 */
-						ds.send( pkg );
-						System.out.println(
-							"Mensagem enviada para: " + addr.getHostAddress() + "\n" + "Porta: " + serverSettings.getPort() + "\n"
-								+ "Mensagem: " + sentence );
-					}
-				
-				}
-				
-			}
+//			while( true ) {
+//				
+//				System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
+//				System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
+//				System.out.println( "CHAVE: BigInteger" );
+//				System.out.println( "VALOR: String" );
+//				/**
+//				 * Leitor do buffer do console
+//				 */
+//				BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
+//				String sentence = inFromUser.readLine();
+//				if( validate( sentence ) ) {
+//					
+//					byte[] my = sentence.getBytes();
+//		
+//					/**
+//					 * Criação do datagrama IP
+//					 */
+//					DatagramPacket pkg = new DatagramPacket( my, my.length, addr, serverSettings.getPort() );
+//					
+//					if( pkg.getData().length > 1400 ) {
+//						System.out.println( "Mensagem maior do que 4000 bytes" );
+//					} else {
+//						/**
+//						 * Envio do datagrama
+//						 */
+//						ds.send( pkg );
+//						System.out.println(
+//							"Mensagem enviada para: " + addr.getHostAddress() + "\n" + "Porta: " + serverSettings.getPort() + "\n"
+//								+ "Mensagem: " + sentence );
+//					}
+//				
+//				}
+//				
+//			}
 
 		}
 
