@@ -16,7 +16,7 @@ public class ClientSenderThread implements Runnable {
 	private DatagramSocket socketServer;
 
 	private InetAddress serverAddr;
-	
+
 	private SocketSetting serverSettings;
 
 	public ClientSenderThread( DatagramSocket socketServer, InetAddress serverAddr, SocketSetting serverSettings ) {
@@ -28,52 +28,49 @@ public class ClientSenderThread implements Runnable {
 	@Override
 	public void run() {
 
-		while ( true ) {
+		try {
 
-			try {
+			System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
+			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
+			System.out.println( "CHAVE: BigInteger" );
+			System.out.println( "VALOR: String" );
+			
+			while ( true ) {
 
-				while ( true ) {
+				/**
+				 * Leitor do buffer do console
+				 */
+				BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
+				String sentence = inFromUser.readLine();
+				if ( validate( sentence ) ) {
 
-					System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
-					System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
-					System.out.println( "CHAVE: BigInteger" );
-					System.out.println( "VALOR: String" );
+					byte[] my = sentence.getBytes();
+
 					/**
-					 * Leitor do buffer do console
+					 * Criação do datagrama IP
 					 */
-					BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
-					String sentence = inFromUser.readLine();
-					if ( validate( sentence ) ) {
+					DatagramPacket pkg = new DatagramPacket( my, my.length, serverAddr, serverSettings.getPort() );
 
-						byte[] my = sentence.getBytes();
-
+					if ( pkg.getData().length > 1400 ) {
+						System.out.println( "Mensagem maior do que 1400 bytes" );
+					} else {
 						/**
-						 * Criação do datagrama IP
+						 * Envio do datagrama
 						 */
-						DatagramPacket pkg = new DatagramPacket( my, my.length, serverAddr, serverSettings.getPort() );
-
-						if ( pkg.getData().length > 1400 ) {
-							System.out.println( "Mensagem maior do que 1400 bytes" );
-						} else {
-							/**
-							 * Envio do datagrama
-							 */
-							socketServer.send( pkg );
-							System.out.println(
-								"Mensagem enviada para: " + serverAddr.getHostAddress() + "\n" + "Porta: "
-									+ serverSettings.getPort() + "\n" + "Mensagem: " + sentence );
-						}
-
+						socketServer.send( pkg );
+						System.out.println(
+							"Mensagem enviada para: " + serverAddr.getHostAddress() + "\n" + "Porta: "
+								+ serverSettings.getPort() + "\n" + "Mensagem: " + sentence );
 					}
-					
-					Thread.sleep( 1 );
-					
+
 				}
 
-			} catch ( Exception ex ) {
-				ex.printStackTrace();
+				Thread.sleep( 1 );
+
 			}
 
+		} catch ( Exception ex ) {
+			ex.printStackTrace();
 		}
 
 	}
@@ -83,15 +80,19 @@ public class ClientSenderThread implements Runnable {
 		List< String > params = Arrays.asList( sentence.split( " " ) );
 
 		if ( !Operation.DELETE.name().equals( params.get( 0 ) ) && !Operation.INSERT.name().equals( params.get( 0 ) )
-			&& !Operation.UPDATE.name().equals( params.get( 0 ) ) && !Operation.RETURN.name().equals( params.get( 0 ) ) ) {
+			&& !Operation.UPDATE.name().equals( params.get( 0 ) )
+			&& !Operation.RETURN.name().equals( params.get( 0 ) ) ) {
 			System.out.println( "Operacao Invalida." );
 			return Boolean.FALSE;
 		} else {
-			if ( Operation.DELETE.name().equals( params.get( 0 ) ) && params.size() > 2 ) {
+			if ( Operation.DELETE.name().equals( params.get( 0 ) ) && params.size() != 2 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: DELETE 3" );
 				return Boolean.FALSE;
 			} else if ( Operation.RETURN.name().equals( params.get( 0 ) ) && params.size() > 2 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: RETURN / RETURN KEY" );
+				return Boolean.FALSE;
+			} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) && params.size() != 3 ) {
+				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: INSERT 3 VALOR" );
 				return Boolean.FALSE;
 			} else {
 				return Boolean.TRUE;
