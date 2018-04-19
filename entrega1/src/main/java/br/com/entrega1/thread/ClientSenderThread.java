@@ -53,7 +53,7 @@ public class ClientSenderThread implements Runnable {
 						DatagramPacket pkg = new DatagramPacket( my, my.length, serverAddr, serverSettings.getPort() );
 
 						if ( pkg.getData().length > 1400 ) {
-							System.out.println( "Mensagem maior do que 4000 bytes" );
+							System.out.println( "Mensagem maior do que 1400 bytes" );
 						} else {
 							/**
 							 * Envio do datagrama
@@ -90,8 +90,8 @@ public class ClientSenderThread implements Runnable {
 			if ( Operation.DELETE.name().equals( params.get( 0 ) ) && params.size() > 2 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: DELETE 3" );
 				return Boolean.FALSE;
-			} else if ( Operation.RETURN.name().equals( params.get( 0 ) ) && params.size() > 1 ) {
-				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: RETURN" );
+			} else if ( Operation.RETURN.name().equals( params.get( 0 ) ) && params.size() > 2 ) {
+				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: RETURN / RETURN KEY" );
 				return Boolean.FALSE;
 			} else {
 				return Boolean.TRUE;

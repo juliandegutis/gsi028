@@ -18,7 +18,7 @@ public class ClientRecieveThread implements Runnable {
 						
 			while( true ) {
 				
-				byte[] receiveData = new byte[ 4000 ];
+				byte[] receiveData = new byte[ 1400 ];
 				
 				/**
 				 * Recebe o datagrama do cliente
@@ -32,7 +32,7 @@ public class ClientRecieveThread implements Runnable {
 				byte[] data = new byte[ receivePacket.getLength() ];
 				
 				/**
-				 * Caso o datagrama seja maior do que 4000 bytes, remove o excesso.
+				 * Caso o datagrama seja maior do que 1400 bytes, remove o excesso.
 				 */
 		        System.arraycopy( receivePacket.getData(), receivePacket.getOffset(), data, 0, receivePacket.getLength() );
 				String sentence = new String( data );

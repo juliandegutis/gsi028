@@ -56,4 +56,12 @@ public class Context {
 		return toString;
 	}
 	
+	public String get( BigInteger key ) {
+		if( context.get( key ) != null ) {
+			return "(" + key + "," + context.get( key ) + ")";
+		} else {
+			return "Chave não encontrada no contexto.";
+		}
+	}
+	
 }

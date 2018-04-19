@@ -50,6 +50,10 @@ public class ExecutorThread implements Runnable {
 
 	}
 
+	/**
+	 * Executa a instrução
+	 * @param instruction
+	 */
 	private void execute( String instruction ) {
 		List< String > params = Arrays.asList( instruction.split( ";" ) );
 		if ( Operation.RETURN.name().equals( params.get( 0 ) ) ) {
@@ -67,13 +71,25 @@ public class ExecutorThread implements Runnable {
 
 	}
 
+	/**
+	 * Retorna para o client o datagram
+	 * @param params
+	 */
 	private void sendDatagram( List< String > params ) {
 		try {
-			System.out.println( "Enviado o contexto para o remetente" );
-			byte[] sendData = context.stringfy().getBytes();
-			DatagramPacket sendPacket = new DatagramPacket( sendData, sendData.length,
-				InetAddress.getByName( params.get( 1 ).replace( "/", "" ) ), Integer.parseInt( params.get( 2 ) ) );
-			serverSocket.send( sendPacket );
+			System.out.println( "Enviando o contexto para o remetente" );
+			byte[] sendData;
+			if( params.size() < 4 ) {
+				sendData = context.stringfy().getBytes();
+				DatagramPacket sendPacket = new DatagramPacket( sendData, sendData.length,
+					InetAddress.getByName( params.get( 1 ).replace( "/", "" ) ), Integer.parseInt( params.get( 2 ) ) );
+				serverSocket.send( sendPacket );
+			} else {
+				sendData = context.get( new BigInteger( params.get( 1 ) ) ).getBytes();
+				DatagramPacket sendPacket = new DatagramPacket( sendData, sendData.length,
+					InetAddress.getByName( params.get( 2 ).replace( "/", "" ) ), Integer.parseInt( params.get( 3 ) ) );
+				serverSocket.send( sendPacket );
+			}
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 		}

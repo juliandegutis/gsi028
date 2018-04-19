@@ -92,7 +92,11 @@ public class ServerRecieveThread implements Runnable {
 		String operation = list.get( 0 );
 
 		if ( Operation.RETURN.name().equals( operation ) ) {
-			executeQueue.add( operation + ";" + recieveAddress.toString() + ";" + String.valueOf( recievePort ) );
+			if( list.size() < 2 ) {
+				executeQueue.add( operation + ";" + recieveAddress.toString() + ";" + String.valueOf( recievePort ) );
+			} else {
+				executeQueue.add( operation + ";" + list.get( 1 ) + ";" + recieveAddress.toString() + ";" + String.valueOf( recievePort ) );
+			}
 		} else {
 
 			list.remove( 0 );
