@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import br.com.entrega1.enums.Operation;
 
@@ -15,6 +19,9 @@ public class ServerRecieveThread implements Runnable {
 	private DatagramSocket serverSocket;
 	
 	private Queue< String > executeQueue;
+	
+	private ExecutorService executor = Executors.newCachedThreadPool();
+
 
 	public ServerRecieveThread( DatagramSocket serverSocket, Queue< String > executeQueue ) {
 		this.serverSocket = serverSocket;
@@ -35,7 +42,20 @@ public class ServerRecieveThread implements Runnable {
 				 * Recebe o datagrama do cliente
 				 */
 				DatagramPacket receivePacket = new DatagramPacket( receiveData, receiveData.length );
-				serverSocket.receive( receivePacket );
+				
+				Future< String > future = recieve( receivePacket );
+				try {
+					while( !future.isDone() ) {
+						Thread.sleep( 300 );
+					}
+					future.get();
+				} catch ( InterruptedException e ) {
+					continue;
+				} catch ( ExecutionException e ) {
+					continue;
+				} finally {
+					future.cancel( true );
+				}
 
 				/**
 				 * Verifica o tamanho do datagrama
@@ -114,6 +134,13 @@ public class ServerRecieveThread implements Runnable {
 			}
 		}
 
+	}
+	
+	public Future< String > recieve( DatagramPacket receivePacket ) {
+		return executor.submit( () -> {
+			serverSocket.receive( receivePacket );
+			return null;
+		} );
 	}
 
 }

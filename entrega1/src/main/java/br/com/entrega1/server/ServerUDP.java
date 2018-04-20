@@ -56,7 +56,7 @@ public class ServerUDP {
 		executor.execute( logThread );
 		executor.execute( executorThread );
 		executor.execute( recieveThread );
-
+		
 	}
 
 }

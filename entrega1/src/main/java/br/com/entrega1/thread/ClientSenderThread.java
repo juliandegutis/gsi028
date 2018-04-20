@@ -7,6 +7,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import br.com.entrega1.configuration.SocketSetting;
 import br.com.entrega1.enums.Operation;
@@ -18,6 +22,8 @@ public class ClientSenderThread implements Runnable {
 	private InetAddress serverAddr;
 
 	private SocketSetting serverSettings;
+
+	private ExecutorService executor = Executors.newFixedThreadPool( 1 );
 
 	public ClientSenderThread( DatagramSocket socketServer, InetAddress serverAddr, SocketSetting serverSettings ) {
 		this.socketServer = socketServer;
@@ -34,14 +40,31 @@ public class ClientSenderThread implements Runnable {
 			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
 			System.out.println( "CHAVE: BigInteger" );
 			System.out.println( "VALOR: String" );
-			
+
 			while ( true ) {
+
+				String sentence = "";
+				Thread.sleep( 300 );
+
+				Future< String > future = readLine();
+				try {
+					
+					while ( !future.isDone() ) {
+						Thread.sleep( 300 );
+					}
+					Object result = future.get();
+					sentence = result.toString();
+				} catch ( InterruptedException e ) {
+					continue;
+				} catch ( ExecutionException e ) {
+					continue;
+				} finally {
+					future.cancel( true );
+				}
 
 				/**
 				 * Leitor do buffer do console
 				 */
-				BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
-				String sentence = inFromUser.readLine();
 				if ( validate( sentence ) ) {
 
 					byte[] my = sentence.getBytes();
@@ -99,6 +122,13 @@ public class ClientSenderThread implements Runnable {
 			}
 		}
 
+	}
+
+	public Future< String > readLine() {
+		BufferedReader inFromUser = new BufferedReader( new InputStreamReader( System.in ) );
+		return executor.submit( () -> {
+			return inFromUser.readLine();
+		} );
 	}
 
 }
