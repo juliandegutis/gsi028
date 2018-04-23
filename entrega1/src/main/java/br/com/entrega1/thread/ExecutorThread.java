@@ -37,6 +37,7 @@ public class ExecutorThread implements Runnable {
 
 		while ( true ) {
 			try {
+				Thread.sleep( 20000 );
 				String instruction = executeQueue.poll();
 				if ( instruction != null ) {
 					System.out.println( "Executando instrução: " + instruction );

@@ -114,10 +114,23 @@ public class ClientSenderThread implements Runnable {
 			} else if ( Operation.RETURN.name().equals( params.get( 0 ) ) && params.size() > 2 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: RETURN / RETURN KEY" );
 				return Boolean.FALSE;
-			} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) && params.size() != 3 ) {
+			} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) && params.size() < 3 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: INSERT 3 VALOR" );
 				return Boolean.FALSE;
 			} else {
+				if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 20 ) {
+					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido são de 20 bytes" );
+					return Boolean.FALSE;
+				} else if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 1400 ) {
+					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido são de 1400 bytes" );
+					return Boolean.FALSE;
+				} else if( Operation.UPDATE.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 1400 ) {
+					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido são de 1400 bytes" );
+					return Boolean.FALSE;
+				} else if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 20 ) {
+					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido são de 20 bytes" );
+					return Boolean.FALSE;
+				}
 				return Boolean.TRUE;
 			}
 		}
