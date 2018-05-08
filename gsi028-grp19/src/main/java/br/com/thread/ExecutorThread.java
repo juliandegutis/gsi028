@@ -20,7 +20,7 @@ public class ExecutorThread implements Runnable {
 	private Context context;
 
 	private DatagramSocket serverSocket;
-
+	
 	public ExecutorThread(
 		DatagramSocket serverSocket,
 		Queue< String > logQueue,
