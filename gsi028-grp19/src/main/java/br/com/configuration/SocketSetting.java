@@ -1,7 +1,7 @@
 package br.com.configuration;
 
 /**
- * Classe para a configuração dos sockets
+ * Classe para a configuracao dos sockets
  * @author juliang
  *
  */

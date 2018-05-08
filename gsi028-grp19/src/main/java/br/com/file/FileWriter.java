@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstração para operações de escritas em arquivo
+ * Abstracao para operacoes de escritas em arquivo
  * @author juliang
  *
  */
 public class FileWriter {
 
 	/**
-	 * Escreve o log das operações no arquivo
+	 * Escreve o log das operacoes no arquivo
 	 * @param path
 	 * @param text
 	 * @throws IOException

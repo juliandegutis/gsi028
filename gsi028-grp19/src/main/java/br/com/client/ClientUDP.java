@@ -23,7 +23,7 @@ public class ClientUDP {
 		try {
 						
 			/**
-			 * Criação das configurações externas dos sockets (cliente/servidor)
+			 * Criacao das configuracoes externas dos sockets (cliente/servidor)
 			 */
 			serverSettings = Configuration.serverSettings();
 			mySettings = Configuration.clientSettings();
@@ -31,7 +31,7 @@ public class ClientUDP {
 			executor = Executors.newFixedThreadPool(50);
 
 			/**
-			 * Tradução de uma String HOST para a classe InetAddress
+			 * Traducao de uma String HOST para a classe InetAddress
 			 */
 			InetAddress addr = InetAddress.getByName( serverSettings.getHost() );
 			

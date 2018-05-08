@@ -5,7 +5,7 @@ import java.io.File;
 import br.com.file.FileReader;
 
 /**
- * Classe para Configuração Externa
+ * Classe para Configuracao Externa
  * @author juliang
  *
  */

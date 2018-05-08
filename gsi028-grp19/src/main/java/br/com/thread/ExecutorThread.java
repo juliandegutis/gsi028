@@ -40,7 +40,7 @@ public class ExecutorThread implements Runnable {
 				//Thread.sleep( 20000 );
 				String instruction = executeQueue.poll();
 				if ( instruction != null ) {
-					System.out.println( "Executando instrução: " + instruction );
+					System.out.println( "Executando instrucao: " + instruction );
 					execute( instruction );
 				}
 				Thread.sleep( 1 );
@@ -52,7 +52,7 @@ public class ExecutorThread implements Runnable {
 	}
 
 	/**
-	 * Executa a instrução
+	 * Executa a instrucao
 	 * @param instruction
 	 */
 	private void execute( String instruction ) {

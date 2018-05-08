@@ -32,7 +32,7 @@ public class ServerUDP {
 	public static void main( String args[] ) throws Exception {
 		
 		/**
-		 * Externalização das configurações
+		 * Externalizacoes das configuracoes
 		 */
 		context = new Context();
 		context.load( Paths.get( "src/main/resources/log/log.txt" ) );
@@ -42,7 +42,7 @@ public class ServerUDP {
 		executor = Executors.newFixedThreadPool(50);
 		
 		/**
-		 * Declaração das Threads
+		 * Declaracao das Threads
 		 */
 		LogThread logThread = new LogThread( logQueue );
 		
@@ -51,7 +51,7 @@ public class ServerUDP {
 		ServerRecieveThread recieveThread = new ServerRecieveThread( serverSocket, executeQueue );
 		
 		/**
-		 * Execução das Threads
+		 * Execucao das Threads
 		 */
 		executor.execute( logThread );
 		executor.execute( executorThread );

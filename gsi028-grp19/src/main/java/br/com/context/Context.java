@@ -12,7 +12,7 @@ import java.util.Map;
 import br.com.enums.Operation;
 
 /** 
- * Contexto da aplicação
+ * Contexto da aplicacao
  * @author juliang
  *
  */
@@ -60,7 +60,7 @@ public class Context {
 		if( context.get( key ) != null ) {
 			return "(" + key + "," + context.get( key ) + ")";
 		} else {
-			return "Chave não encontrada no contexto.";
+			return "Chave nao encontrada no contexto.";
 		}
 	}
 	

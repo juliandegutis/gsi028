@@ -13,14 +13,14 @@ import org.w3c.dom.NodeList;
 import br.com.configuration.SocketSetting;
 
 /**
- * Abstração para a leitura de arquivos
+ * Abstracao para a leitura de arquivos
  * @author juliang
  *
  */
 public class FileReader {
 
 	/**
-	 * Le o arquivo de configuração XML
+	 * Le o arquivo de configuracao XML
 	 * @param file
 	 * @return SocketSetting
 	 */

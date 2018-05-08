@@ -70,7 +70,7 @@ public class ClientSenderThread implements Runnable {
 					byte[] my = sentence.getBytes();
 
 					/**
-					 * Criação do datagrama IP
+					 * Criacao do datagrama IP
 					 */
 					DatagramPacket pkg = new DatagramPacket( my, my.length, serverAddr, serverSettings.getPort() );
 
@@ -119,16 +119,16 @@ public class ClientSenderThread implements Runnable {
 				return Boolean.FALSE;
 			} else {
 				if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 20 ) {
-					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido são de 20 bytes" );
+					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido sao de 20 bytes" );
 					return Boolean.FALSE;
-				} else if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 1400 ) {
-					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido são de 1400 bytes" );
+				} else if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 2 ).getBytes().length > 1400 ) {
+					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido sao de 1400 bytes" );
 					return Boolean.FALSE;
-				} else if( Operation.UPDATE.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 1400 ) {
-					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido são de 1400 bytes" );
+				} else if( Operation.UPDATE.name().equals( params.get( 0 ) ) && params.get( 2 ).getBytes().length > 1400 ) {
+					System.out.println( "Quantidade de bytes do valor maior do que o permitido. O permitido sao de 1400 bytes" );
 					return Boolean.FALSE;
 				} else if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 20 ) {
-					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido são de 20 bytes" );
+					System.out.println( "Quantidade de bytes da chave maior do que o permitido. O permitido sï¿½o de 20 bytes" );
 					return Boolean.FALSE;
 				}
 				return Boolean.TRUE;

@@ -82,7 +82,7 @@ public class ServerRecieveThread implements Runnable {
 				messageToQueue( sentence, receivePacket.getAddress(), receivePacket.getPort() );
 
 				/**
-				 * Envia a confirmação de recebimento para o cliente.
+				 * Envia a confirmacao de recebimento para o cliente.
 				 */
 				InetAddress IPAddress = receivePacket.getAddress();
 				int port = receivePacket.getPort();
