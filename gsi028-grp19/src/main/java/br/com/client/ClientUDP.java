@@ -8,12 +8,14 @@ import java.util.concurrent.Executors;
 import br.com.configuration.Configuration;
 import br.com.configuration.SocketSetting;
 import br.com.thread.ClientRecieveThread;
+import br.com.thread.ClientSenderGrpcThread;
 import br.com.thread.ClientSenderThread;
 
 public class ClientUDP {
 
 	private static SocketSetting serverSettings;
 	private static SocketSetting mySettings;
+	private static SocketSetting grpcClientSettings;
 	private static DatagramSocket ds;
 	private static ExecutorService executor;
 
@@ -27,6 +29,8 @@ public class ClientUDP {
 			 */
 			serverSettings = Configuration.serverSettings();
 			mySettings = Configuration.clientSettings();
+			grpcClientSettings = Configuration.grpcClientSettings();
+			
 			ds = new DatagramSocket( mySettings.getPort() );
 			executor = Executors.newFixedThreadPool(50);
 
@@ -40,9 +44,11 @@ public class ClientUDP {
 			 */
 			ClientRecieveThread recieveThread = new ClientRecieveThread( ds );
 			ClientSenderThread senderThread = new ClientSenderThread( ds, addr, serverSettings );
+			ClientSenderGrpcThread grpcClientThread = new ClientSenderGrpcThread( grpcClientSettings );
 			
 			executor.execute( recieveThread );
 			executor.execute( senderThread );
+			executor.execute( grpcClientThread );
 
 		}
 

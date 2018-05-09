@@ -63,7 +63,9 @@ public class ExecutorThread implements Runnable {
 		} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) ) {
 			context.put( new BigInteger( params.get( 1 ) ), params.get( 2 ) );
 		} else if ( Operation.UPDATE.name().equals( params.get( 0 ) ) ) {
-			context.put( new BigInteger( params.get( 1 ) ), params.get( 2 ) );
+			if( "Chave nao encontrada no contexto.".equals( context.get( new BigInteger( params.get( 1 ) ) ) ) ) {
+				context.put( new BigInteger( params.get( 1 ) ), params.get( 2 ) );
+			}
 		} else {
 			context.remove( new BigInteger( params.get( 1 ) ) );
 		}

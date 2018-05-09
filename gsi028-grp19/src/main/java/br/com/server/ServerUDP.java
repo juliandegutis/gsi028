@@ -11,6 +11,7 @@ import br.com.configuration.Configuration;
 import br.com.configuration.SocketSetting;
 import br.com.context.Context;
 import br.com.thread.ExecutorThread;
+import br.com.thread.GrpcThread;
 import br.com.thread.LogThread;
 import br.com.thread.ServerRecieveThread;
 
@@ -23,6 +24,7 @@ public class ServerUDP {
 
 	private static DatagramSocket serverSocket;
 	private static SocketSetting mySettings;
+	private static SocketSetting grpcServerSettings;
 	private static Queue< String > logQueue = new LinkedList< String >();
 	private static Queue< String > executeQueue = new LinkedList< String >();
 	private static Context context;
@@ -37,6 +39,7 @@ public class ServerUDP {
 		context = new Context();
 		context.load( Paths.get( "src/main/resources/log/log.txt" ) );
 		mySettings = Configuration.serverSettings();
+		grpcServerSettings = Configuration.grpcServerSettings();
 		serverSocket = new DatagramSocket( mySettings.getPort() );
 		
 		executor = Executors.newFixedThreadPool(50);
@@ -50,13 +53,15 @@ public class ServerUDP {
 				
 		ServerRecieveThread recieveThread = new ServerRecieveThread( serverSocket, executeQueue );
 		
+		GrpcThread grpcServerThread = new GrpcThread( logQueue, executeQueue, context, grpcServerSettings );
+		
 		/**
 		 * Execucao das Threads
 		 */
 		executor.execute( logThread );
 		executor.execute( executorThread );
 		executor.execute( recieveThread );
-		
+		executor.execute( grpcServerThread );
 	}
 
 }
