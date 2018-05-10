@@ -13,9 +13,12 @@ import br.com.configuration.SocketSetting;
 import br.com.enums.Operation;
 import br.com.proto.ContextProto.ContextRequest;
 import br.com.proto.ContextProto.ContextResponse;
+import br.com.proto.ContextProto.SubscribeRequest;
+import br.com.proto.ContextProto.SubscribeResponse;
 import br.com.proto.ContextServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 
 public class ClientSenderGrpcThread implements Runnable {
 
@@ -33,6 +36,7 @@ public class ClientSenderGrpcThread implements Runnable {
 		String server = settings.getHost() + ":" + settings.getPort();
 		
 		final ManagedChannel channel = ManagedChannelBuilder.forTarget( server ).usePlaintext( true ).build();
+		final ManagedChannel aSyncChannel = ManagedChannelBuilder.forTarget( server ).usePlaintext( true ).build();
 
 		
 		try {
@@ -77,19 +81,36 @@ public class ClientSenderGrpcThread implements Runnable {
 					ContextServiceGrpc.ContextServiceBlockingStub stub = ContextServiceGrpc.newBlockingStub( channel );
 					ContextRequest contextRequest = ContextRequest.newBuilder().setInstruction( sentence ).build();
 					
+					ContextServiceGrpc.ContextServiceStub aSyncStub = ContextServiceGrpc.newStub( aSyncChannel );
+
+					
 					ContextResponse contextResponse = null;
 					
 					if( Operation.INSERT.name().equals( operation ) ) {
 						contextResponse = stub.insert( contextRequest );
+						System.out.println( contextResponse.getMessage() );
 					} else if( Operation.UPDATE.name().equals( operation ) ) {
 						contextResponse = stub.update( contextRequest );
+						System.out.println( contextResponse.getMessage() );
 					} else if( Operation.DELETE.name().equals( operation ) ) {
 						contextResponse = stub.delete( contextRequest );
+						System.out.println( contextResponse.getMessage() );
 					} else if( Operation.RETURN.name().equals( operation ) ) {
 						contextResponse = stub.find( contextRequest );
-					}
-
-					System.out.println( contextResponse.getMessage() );
+						System.out.println( contextResponse.getMessage() );
+					} else if( Operation.SUBSCRIBE.name().equals( operation ) ) {
+						SubscribeRequest subscribeRequest = SubscribeRequest.newBuilder().setKey( params.get( 1 ) ).build();
+						aSyncStub.subscribe( subscribeRequest, new StreamObserver< SubscribeResponse >() {
+							public void onNext( SubscribeResponse response ) {
+								System.out.println( response.getMessage() );
+					        }
+					        public void onError(Throwable t) {
+					        }
+					        public void onCompleted() {				         
+					        	channel.shutdownNow();
+					        }
+						});
+					} 
 					
 				}
 
@@ -108,9 +129,12 @@ public class ClientSenderGrpcThread implements Runnable {
 
 		List< String > params = Arrays.asList( sentence.split( " " ) );
 
-		if ( !Operation.DELETE.name().equals( params.get( 0 ) ) && !Operation.INSERT.name().equals( params.get( 0 ) )
+		if ( !Operation.DELETE.name().equals( params.get( 0 ) )
+			&& !Operation.INSERT.name().equals( params.get( 0 ) )
 			&& !Operation.UPDATE.name().equals( params.get( 0 ) )
-			&& !Operation.RETURN.name().equals( params.get( 0 ) ) ) {
+			&& !Operation.RETURN.name().equals( params.get( 0 ) )
+			&& !Operation.SUBSCRIBE.name().equals( params.get( 0 ) )
+			&& !Operation.UNSUBSCRIBE.name().equals( params.get( 0 ) )) {
 			System.out.println( "Operacao Invalida." );
 			return Boolean.FALSE;
 		} else {
@@ -122,6 +146,12 @@ public class ClientSenderGrpcThread implements Runnable {
 				return Boolean.FALSE;
 			} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) && params.size() < 3 ) {
 				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: INSERT 3 VALOR" );
+				return Boolean.FALSE;
+			} else if ( Operation.SUBSCRIBE.name().equals( params.get( 0 ) ) && params.size() != 2 ) {
+				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: SUBSCRIBE 2" );
+				return Boolean.FALSE;
+			} else if ( Operation.UNSUBSCRIBE.name().equals( params.get( 0 ) ) && params.size() != 2 ) {
+				System.out.println( "Quantidade de Parametros Invalidos. Exemplo: UNSUBSCRIBE 3" );
 				return Boolean.FALSE;
 			} else {
 				if( Operation.INSERT.name().equals( params.get( 0 ) ) && params.get( 1 ).getBytes().length > 20 ) {

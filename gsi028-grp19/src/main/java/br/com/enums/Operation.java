@@ -10,7 +10,9 @@ public enum Operation {
 	INSERT( "INSERT" ), 
 	DELETE( "DELETE" ),
 	UPDATE( "UPDATE" ),
-	RETURN( "RETURN" );
+	RETURN( "RETURN" ),
+	SUBSCRIBE( "SUBSCRIBE" ),
+	UNSUBSCRIBE( "UNSUBSCRIBE" );
 	
 	private String value;
 	

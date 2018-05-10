@@ -2135,7 +2135,7 @@ public final class ContextProto {
       "ntextRequest\022\023\n\013instruction\030\001 \001(\t\"\"\n\017Con" +
       "textResponse\022\017\n\007message\030\001 \001(\t\"\037\n\020Subscri" +
       "beRequest\022\013\n\003key\030\001 \001(\t\"$\n\021SubscribeRespo" +
-      "nse\022\017\n\007message\030\001 \001(\t2\310\003\n\016ContextService\022" +
+      "nse\022\017\n\007message\030\001 \001(\t2\372\002\n\016ContextService\022" +
       "E\n\006insert\022\034.br.com.proto.ContextRequest\032" +
       "\035.br.com.proto.ContextResponse\022E\n\006update" +
       "\022\034.br.com.proto.ContextRequest\032\035.br.com." +
@@ -2143,11 +2143,9 @@ public final class ContextProto {
       ".proto.ContextRequest\032\035.br.com.proto.Con",
       "textResponse\022C\n\004find\022\034.br.com.proto.Cont" +
       "extRequest\032\035.br.com.proto.ContextRespons" +
-      "e\022L\n\tsubscribe\022\036.br.com.proto.SubscribeR" +
-      "equest\032\037.br.com.proto.SubscribeResponse\022" +
-      "N\n\013unsubscribe\022\036.br.com.proto.SubscribeR" +
-      "equest\032\037.br.com.proto.SubscribeResponseb" +
-      "\006proto3"
+      "e\022N\n\tsubscribe\022\036.br.com.proto.SubscribeR" +
+      "equest\032\037.br.com.proto.SubscribeResponse0" +
+      "\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -1,5 +1,8 @@
 package br.com.thread;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -8,9 +11,11 @@ import java.util.concurrent.Future;
 
 import br.com.configuration.SocketSetting;
 import br.com.context.Context;
+import br.com.proto.ContextProto.SubscribeResponse;
 import br.com.service.ContextService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.stub.StreamObserver;
 
 public class GrpcThread implements Runnable {
 
@@ -23,13 +28,19 @@ public class GrpcThread implements Runnable {
 	private ExecutorService executor = Executors.newCachedThreadPool();
 	
 	private SocketSetting settings;
+	
+	private List< String > subscribeAlert = new ArrayList< String >();
+	
+	private Map< String, List< StreamObserver< SubscribeResponse > > > observers;
 
-	public GrpcThread( Queue< String > logQueue, Queue< String > executeQueue, Context context, SocketSetting settings ) {
+
+	public GrpcThread( Queue< String > logQueue, Queue< String > executeQueue, Context context, SocketSetting settings, Map< String, List< StreamObserver< SubscribeResponse > > > observers ) {
 		super();
 		this.logQueue = logQueue;
 		this.executeQueue = executeQueue;
 		this.context = context;
 		this.settings = settings;
+		this.observers = observers;
 	}
 
 	@Override
@@ -37,8 +48,7 @@ public class GrpcThread implements Runnable {
 
 		try {
 
-			Server server = ServerBuilder.forPort( settings.getPort() )
-				.addService( new ContextService( logQueue, executeQueue, context ) ).build();
+			Server server = ServerBuilder.forPort( settings.getPort() ).addService( new ContextService( logQueue, executeQueue, context, observers ) ).build();
 
 			// Start the server
 			server.start();

@@ -2,12 +2,19 @@ syntax = "proto3";
 package br.com.proto;
 
 message ContextRequest {
-	string key = 1;
-	string value = 2;
+	string instruction = 1;
 }
 
 message ContextResponse {
 	string message = 1;
+}
+
+message SubscribeRequest {
+    string key = 1;
+}
+
+message SubscribeResponse {
+    string message = 1;
 }
 
 service ContextService {
@@ -15,4 +22,6 @@ service ContextService {
 	rpc update(ContextRequest) returns (ContextResponse);
 	rpc delete(ContextRequest) returns (ContextResponse);
 	rpc find(ContextRequest) returns (ContextResponse);
+    rpc subscribe(SubscribeRequest) returns (stream SubscribeResponse);
+
 }

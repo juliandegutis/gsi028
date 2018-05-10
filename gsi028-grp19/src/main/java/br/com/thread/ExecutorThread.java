@@ -6,10 +6,13 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import br.com.context.Context;
 import br.com.enums.Operation;
+import br.com.proto.ContextProto.SubscribeResponse;
+import io.grpc.stub.StreamObserver;
 
 public class ExecutorThread implements Runnable {
 
@@ -21,15 +24,19 @@ public class ExecutorThread implements Runnable {
 
 	private DatagramSocket serverSocket;
 	
+	private Map< String, List< StreamObserver< SubscribeResponse > > > observers;
+	
 	public ExecutorThread(
 		DatagramSocket serverSocket,
 		Queue< String > logQueue,
 		Queue< String > executeQueue,
-		Context context ) {
+		Context context,
+		Map< String, List< StreamObserver< SubscribeResponse > > > observers ) {
 		this.logQueue = logQueue;
 		this.executeQueue = executeQueue;
 		this.context = context;
 		this.serverSocket = serverSocket;
+		this.observers = observers;
 	}
 
 	@Override
@@ -62,12 +69,15 @@ public class ExecutorThread implements Runnable {
 			return;
 		} else if ( Operation.INSERT.name().equals( params.get( 0 ) ) ) {
 			context.put( new BigInteger( params.get( 1 ) ), params.get( 2 ) );
+			alertSubscribers( params.get( 1 ), "INSERT -> " + params.get( 2 ) );
 		} else if ( Operation.UPDATE.name().equals( params.get( 0 ) ) ) {
-			if( "Chave nao encontrada no contexto.".equals( context.get( new BigInteger( params.get( 1 ) ) ) ) ) {
+			if( !"Chave nao encontrada no contexto.".equals( context.get( new BigInteger( params.get( 1 ) ) ) ) ) {
 				context.put( new BigInteger( params.get( 1 ) ), params.get( 2 ) );
+				alertSubscribers( params.get( 1 ), "UPDATE -> " + params.get( 2 ) );
 			}
 		} else {
 			context.remove( new BigInteger( params.get( 1 ) ) );
+			alertSubscribers( params.get( 1 ), "DELETE -> " + params.get( 1 ) );
 		}
 
 		logQueue.add( instruction );
@@ -96,6 +106,18 @@ public class ExecutorThread implements Runnable {
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private void alertSubscribers( String key, String changed ) {
+	
+		if( observers.get( key ) != null ) {
+			List< StreamObserver< SubscribeResponse > > observerList = observers.get( key );
+			for( StreamObserver< SubscribeResponse > observer : observerList ) {
+				SubscribeResponse response = SubscribeResponse.newBuilder().setMessage( "Chave " + key + " alterada pela instrucao " + changed ).build();
+				observer.onNext( response );
+			}
+		}
+		
 	}
 
 }

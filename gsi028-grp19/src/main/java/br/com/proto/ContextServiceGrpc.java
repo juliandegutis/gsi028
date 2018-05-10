@@ -83,7 +83,7 @@ public final class ContextServiceGrpc {
   public static final io.grpc.MethodDescriptor<br.com.proto.ContextProto.SubscribeRequest,
       br.com.proto.ContextProto.SubscribeResponse> METHOD_SUBSCRIBE =
       io.grpc.MethodDescriptor.<br.com.proto.ContextProto.SubscribeRequest, br.com.proto.ContextProto.SubscribeResponse>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
           .setFullMethodName(generateFullMethodName(
               "br.com.proto.ContextService", "subscribe"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -91,19 +91,6 @@ public final class ContextServiceGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               br.com.proto.ContextProto.SubscribeResponse.getDefaultInstance()))
           .setSchemaDescriptor(new ContextServiceMethodDescriptorSupplier("subscribe"))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<br.com.proto.ContextProto.SubscribeRequest,
-      br.com.proto.ContextProto.SubscribeResponse> METHOD_UNSUBSCRIBE =
-      io.grpc.MethodDescriptor.<br.com.proto.ContextProto.SubscribeRequest, br.com.proto.ContextProto.SubscribeResponse>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "br.com.proto.ContextService", "unsubscribe"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              br.com.proto.ContextProto.SubscribeRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              br.com.proto.ContextProto.SubscribeResponse.getDefaultInstance()))
-          .setSchemaDescriptor(new ContextServiceMethodDescriptorSupplier("unsubscribe"))
           .build();
 
   /**
@@ -168,13 +155,6 @@ public final class ContextServiceGrpc {
       asyncUnimplementedUnaryCall(METHOD_SUBSCRIBE, responseObserver);
     }
 
-    /**
-     */
-    public void unsubscribe(br.com.proto.ContextProto.SubscribeRequest request,
-        io.grpc.stub.StreamObserver<br.com.proto.ContextProto.SubscribeResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_UNSUBSCRIBE, responseObserver);
-    }
-
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -207,18 +187,11 @@ public final class ContextServiceGrpc {
                   this, METHODID_FIND)))
           .addMethod(
             METHOD_SUBSCRIBE,
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
                 br.com.proto.ContextProto.SubscribeRequest,
                 br.com.proto.ContextProto.SubscribeResponse>(
                   this, METHODID_SUBSCRIBE)))
-          .addMethod(
-            METHOD_UNSUBSCRIBE,
-            asyncUnaryCall(
-              new MethodHandlers<
-                br.com.proto.ContextProto.SubscribeRequest,
-                br.com.proto.ContextProto.SubscribeResponse>(
-                  this, METHODID_UNSUBSCRIBE)))
           .build();
     }
   }
@@ -277,16 +250,8 @@ public final class ContextServiceGrpc {
      */
     public void subscribe(br.com.proto.ContextProto.SubscribeRequest request,
         io.grpc.stub.StreamObserver<br.com.proto.ContextProto.SubscribeResponse> responseObserver) {
-      asyncUnaryCall(
+      asyncServerStreamingCall(
           getChannel().newCall(METHOD_SUBSCRIBE, getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
-    public void unsubscribe(br.com.proto.ContextProto.SubscribeRequest request,
-        io.grpc.stub.StreamObserver<br.com.proto.ContextProto.SubscribeResponse> responseObserver) {
-      asyncUnaryCall(
-          getChannel().newCall(METHOD_UNSUBSCRIBE, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -338,16 +303,10 @@ public final class ContextServiceGrpc {
 
     /**
      */
-    public br.com.proto.ContextProto.SubscribeResponse subscribe(br.com.proto.ContextProto.SubscribeRequest request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<br.com.proto.ContextProto.SubscribeResponse> subscribe(
+        br.com.proto.ContextProto.SubscribeRequest request) {
+      return blockingServerStreamingCall(
           getChannel(), METHOD_SUBSCRIBE, getCallOptions(), request);
-    }
-
-    /**
-     */
-    public br.com.proto.ContextProto.SubscribeResponse unsubscribe(br.com.proto.ContextProto.SubscribeRequest request) {
-      return blockingUnaryCall(
-          getChannel(), METHOD_UNSUBSCRIBE, getCallOptions(), request);
     }
   }
 
@@ -400,22 +359,6 @@ public final class ContextServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_FIND, getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<br.com.proto.ContextProto.SubscribeResponse> subscribe(
-        br.com.proto.ContextProto.SubscribeRequest request) {
-      return futureUnaryCall(
-          getChannel().newCall(METHOD_SUBSCRIBE, getCallOptions()), request);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<br.com.proto.ContextProto.SubscribeResponse> unsubscribe(
-        br.com.proto.ContextProto.SubscribeRequest request) {
-      return futureUnaryCall(
-          getChannel().newCall(METHOD_UNSUBSCRIBE, getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_INSERT = 0;
@@ -423,7 +366,6 @@ public final class ContextServiceGrpc {
   private static final int METHODID_DELETE = 2;
   private static final int METHODID_FIND = 3;
   private static final int METHODID_SUBSCRIBE = 4;
-  private static final int METHODID_UNSUBSCRIBE = 5;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -460,10 +402,6 @@ public final class ContextServiceGrpc {
           break;
         case METHODID_SUBSCRIBE:
           serviceImpl.subscribe((br.com.proto.ContextProto.SubscribeRequest) request,
-              (io.grpc.stub.StreamObserver<br.com.proto.ContextProto.SubscribeResponse>) responseObserver);
-          break;
-        case METHODID_UNSUBSCRIBE:
-          serviceImpl.unsubscribe((br.com.proto.ContextProto.SubscribeRequest) request,
               (io.grpc.stub.StreamObserver<br.com.proto.ContextProto.SubscribeResponse>) responseObserver);
           break;
         default:
@@ -532,7 +470,6 @@ public final class ContextServiceGrpc {
               .addMethod(METHOD_DELETE)
               .addMethod(METHOD_FIND)
               .addMethod(METHOD_SUBSCRIBE)
-              .addMethod(METHOD_UNSUBSCRIBE)
               .build();
         }
       }

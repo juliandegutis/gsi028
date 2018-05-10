@@ -1,14 +1,18 @@
 package br.com.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import br.com.context.Context;
 import br.com.enums.Operation;
 import br.com.proto.ContextProto.ContextRequest;
 import br.com.proto.ContextProto.ContextResponse;
+import br.com.proto.ContextProto.SubscribeRequest;
+import br.com.proto.ContextProto.SubscribeResponse;
 import br.com.proto.ContextServiceGrpc;
 import io.grpc.stub.StreamObserver;
 
@@ -19,12 +23,15 @@ public class ContextService extends ContextServiceGrpc.ContextServiceImplBase {
 	private Queue< String > executeQueue;
 
 	private Context context;
+	
+	private Map< String, List< StreamObserver< SubscribeResponse > > > observers;
 
-	public ContextService( Queue< String > logQueue, Queue< String > executeQueue, Context context ) {
+	public ContextService( Queue< String > logQueue, Queue< String > executeQueue, Context context, Map< String, List< StreamObserver< SubscribeResponse > > > observers ) {
 		super();
 		this.logQueue = logQueue;
 		this.executeQueue = executeQueue;
 		this.context = context;
+		this.observers = observers;
 	}
 
 	@Override
@@ -57,6 +64,21 @@ public class ContextService extends ContextServiceGrpc.ContextServiceImplBase {
 		ContextResponse response = ContextResponse.newBuilder().setMessage( stringify ).build();
 		responseObserver.onNext( response );
 		responseObserver.onCompleted();
+	}
+	
+	@Override
+	public void subscribe( SubscribeRequest request, StreamObserver< SubscribeResponse > responseObserver ) {
+		List< StreamObserver< SubscribeResponse > > registry = observers.get( request.getKey() );
+		if( registry != null ) {
+			registry.add( responseObserver );
+			observers.put( request.getKey(), registry );
+		} else {
+			List< StreamObserver< SubscribeResponse > > list = new ArrayList< StreamObserver< SubscribeResponse > >();
+			list.add( responseObserver );
+			observers.put( request.getKey(), list );
+		}
+		SubscribeResponse response = SubscribeResponse.newBuilder().setMessage( "Subscricao realizada com sucesso" ).build();
+		responseObserver.onNext( response );
 	}
 
 	/**
