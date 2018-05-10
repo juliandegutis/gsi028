@@ -38,7 +38,7 @@ public class ClientSenderGrpcThread implements Runnable {
 		try {
 
 			System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
-			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN" );
+			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN/SUBSCRIBE/UNSUBSCRIBE" );
 			System.out.println( "CHAVE: BigInteger" );
 			System.out.println( "VALOR: String" );
 
@@ -66,24 +66,37 @@ public class ClientSenderGrpcThread implements Runnable {
 
 				/**
 				 * Leitor do buffer do console
-				 */
+				*/
+				
+				
 				if ( validate( sentence ) ) {
 					
+					List< String > params = Arrays.asList( sentence.split( " " ) );
+					String operation = params.get( 0 );
+
 					ContextServiceGrpc.ContextServiceBlockingStub stub = ContextServiceGrpc.newBlockingStub( channel );
-					ContextRequest request = ContextRequest.newBuilder().setKey( "10" ).setValue( sentence ).build();
+					ContextRequest contextRequest = ContextRequest.newBuilder().setInstruction( sentence ).build();
+					
+					ContextResponse contextResponse = null;
+					
+					if( Operation.INSERT.name().equals( operation ) ) {
+						contextResponse = stub.insert( contextRequest );
+					} else if( Operation.UPDATE.name().equals( operation ) ) {
+						contextResponse = stub.update( contextRequest );
+					} else if( Operation.DELETE.name().equals( operation ) ) {
+						contextResponse = stub.delete( contextRequest );
+					} else if( Operation.RETURN.name().equals( operation ) ) {
+						contextResponse = stub.find( contextRequest );
+					}
 
-					ContextResponse response = stub.insert( request );
-
-					System.out.println( response );
-
-					channel.shutdownNow();
+					System.out.println( contextResponse.getMessage() );
 					
 				}
 
 				Thread.sleep( 1 );
 
 			}
-
+			
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
