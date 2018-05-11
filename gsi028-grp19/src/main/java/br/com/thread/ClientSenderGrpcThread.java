@@ -42,7 +42,7 @@ public class ClientSenderGrpcThread implements Runnable {
 		try {
 
 			System.out.println( "Preparado para receber a mensagem: OPERACAO CHAVE VALOR" );
-			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN/SUBSCRIBE/UNSUBSCRIBE" );
+			System.out.println( "OPERACAO: INSERT/UPDATE/DELETE/RETURN/SUBSCRIBE" );
 			System.out.println( "CHAVE: BigInteger" );
 			System.out.println( "VALOR: String" );
 
