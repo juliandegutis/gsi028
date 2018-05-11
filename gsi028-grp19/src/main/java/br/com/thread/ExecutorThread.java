@@ -110,12 +110,16 @@ public class ExecutorThread implements Runnable {
 	
 	private void alertSubscribers( String key, String changed ) {
 	
-		if( observers.get( key ) != null ) {
-			List< StreamObserver< SubscribeResponse > > observerList = observers.get( key );
-			for( StreamObserver< SubscribeResponse > observer : observerList ) {
-				SubscribeResponse response = SubscribeResponse.newBuilder().setMessage( "Chave " + key + " alterada pela instrucao " + changed ).build();
-				observer.onNext( response );
+		try {
+			if( observers.get( key ) != null ) {
+				List< StreamObserver< SubscribeResponse > > observerList = observers.get( key );
+				for( StreamObserver< SubscribeResponse > observer : observerList ) {
+					SubscribeResponse response = SubscribeResponse.newBuilder().setMessage( "Chave " + key + " alterada pela instrucao " + changed ).build();
+					observer.onNext( response );
+				}
 			}
+		} catch( Exception ex ) {
+			// do nothing
 		}
 		
 	}

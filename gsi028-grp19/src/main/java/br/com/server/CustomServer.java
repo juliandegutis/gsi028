@@ -25,7 +25,7 @@ import io.grpc.stub.StreamObserver;
  * @author juliang
  *
  */
-public class ServerUDP {
+public class CustomServer {
 
 	private static DatagramSocket serverSocket;
 	private static SocketSetting mySettings;
