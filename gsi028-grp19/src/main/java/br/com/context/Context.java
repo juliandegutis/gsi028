@@ -32,8 +32,9 @@ public class Context {
 		context.remove( key );
 	}
 	
-	public void load( Path path ) throws IOException {
-		Files.lines( path ).forEach( (line) -> load( line ) );
+	public void load( Path snapshotPath, Path logPath ) throws IOException {
+		Files.lines( snapshotPath ).forEach( (line) -> load( line ) );
+		Files.lines( logPath ).forEach( (line) -> load( line ) );
 	}
 	
 	public void load( String line ) {
@@ -62,6 +63,10 @@ public class Context {
 		} else {
 			return "Chave nao encontrada no contexto.";
 		}
+	}
+	
+	public Map< BigInteger, Object > get() {
+		return this.context;
 	}
 	
 }

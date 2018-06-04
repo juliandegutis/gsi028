@@ -43,7 +43,7 @@ public class CustomServer {
 		 * Externalizacoes das configuracoes
 		 */
 		context = new Context();
-		context.load( Paths.get( "src/main/resources/log/log.txt" ) );
+		context.load( Paths.get( "src/main/resources/snapshot/snapshot.txt" ), Paths.get( "src/main/resources/log/log.txt" ) );
 		mySettings = Configuration.serverSettings();
 		grpcServerSettings = Configuration.grpcServerSettings();
 		serverSocket = new DatagramSocket( mySettings.getPort() );
