@@ -26,17 +26,21 @@ public class ExecutorThread implements Runnable {
 	
 	private Map< String, List< StreamObserver< SubscribeResponse > > > observers;
 	
+	private Boolean semaphore;
+	
 	public ExecutorThread(
 		DatagramSocket serverSocket,
 		Queue< String > logQueue,
 		Queue< String > executeQueue,
 		Context context,
-		Map< String, List< StreamObserver< SubscribeResponse > > > observers ) {
+		Map< String, List< StreamObserver< SubscribeResponse > > > observers,
+		Boolean semaphore ) {
 		this.logQueue = logQueue;
 		this.executeQueue = executeQueue;
 		this.context = context;
 		this.serverSocket = serverSocket;
 		this.observers = observers;
+		this.semaphore = semaphore;
 	}
 
 	@Override
@@ -44,9 +48,9 @@ public class ExecutorThread implements Runnable {
 
 		while ( true ) {
 			try {
-				//Thread.sleep( 20000 );
+				
 				String instruction = executeQueue.poll();
-				if ( instruction != null ) {
+				if ( instruction != null && !semaphore ) {
 					System.out.println( "Executando instrucao: " + instruction );
 					execute( instruction );
 				}

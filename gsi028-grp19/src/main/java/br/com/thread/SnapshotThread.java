@@ -13,14 +13,15 @@ public class SnapshotThread implements Runnable {
 	private final String SNAPSHOT_BACKUP_FILE = "src/main/resources/snapshot/old/snapshot#DATE#.txt";
 
 	private final String LOG_PATH = "src/main/resources/log/log#DATE#.txt";
-	private final String LOG_BACKUP_PATH = "src/main/resources/log/log#DATE#.txt";
+	private final String LOG_BACKUP_PATH = "src/main/resources/log/old/log#DATE#.txt";
 
 
-	
+	private Boolean semaphore;
 	private Context context;
 	
-	public SnapshotThread( Context context ) {
+	public SnapshotThread( Context context, Boolean semaphore ) {
 		this.context = context;
+		this.semaphore = semaphore;
 	}
 	
 	@Override
@@ -29,25 +30,31 @@ public class SnapshotThread implements Runnable {
 		while( true ) {
 			
 			try {
-			
+				
+				Thread.sleep( 10000 );
+				
+				semaphore = true;
+				
 				Date now = new Date();
 				Map< BigInteger, Object > contextMap = context.get();
 				
 				FileWriter.moveFile( 
-					SNAPSHOT_FILE.replace( "#DATE#", String.valueOf( now.getTime() ) ), 
+					SNAPSHOT_FILE.replace( "#DATE#", "" ), 
 					SNAPSHOT_BACKUP_FILE.replace( "#DATE#", String.valueOf( now.getTime() ) ) );
 				
 				FileWriter.moveFile( 
-					SNAPSHOT_FILE.replace( "#DATE#", String.valueOf( now.getTime() ) ), 
-					SNAPSHOT_BACKUP_FILE.replace( "#DATE#", String.valueOf( now.getTime() ) ) );
+					LOG_PATH.replace( "#DATE#", "" ), 
+					LOG_BACKUP_PATH.replace( "#DATE#", String.valueOf( now.getTime() ) ) );
+				
+				FileWriter.newFile( SNAPSHOT_FILE.replace( "#DATE#", "" ) );
+				FileWriter.newFile( LOG_PATH.replace( "#DATE#", "" ) );
 				
 				for( Map.Entry< BigInteger, Object > entry : contextMap.entrySet() ) {
 					String command = "INSERT;" + entry.getKey().toString() + ";" + entry.getValue().toString();
-					FileWriter.writeToFile( SNAPSHOT_FILE.replace( "DATE", "" ), command );
+					FileWriter.writeToFile( SNAPSHOT_FILE.replace( "#DATE#", "" ), command );
 				}
 				
-				
-				Thread.sleep( 1000 );
+				semaphore = false;
 			
 			} catch( Exception donothing ) {
 				

@@ -34,5 +34,13 @@ public class FileWriter {
 			ex.printStackTrace();
 		}
 	}
+	
+	public static void newFile( String source ) {
+		try {
+			Files.createFile( Paths.get( source ) );
+		} catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+	}
 
 }

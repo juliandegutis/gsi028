@@ -18,6 +18,7 @@ import br.com.thread.ExecutorThread;
 import br.com.thread.GrpcThread;
 import br.com.thread.LogThread;
 import br.com.thread.ServerRecieveThread;
+import br.com.thread.SnapshotThread;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -35,6 +36,7 @@ public class CustomServer {
 	private static Map< String, List< StreamObserver< SubscribeResponse > > > observers = new HashMap< String, List< StreamObserver< SubscribeResponse > > >();
 	private static Context context;
 	private static ExecutorService executor;
+	private static Boolean semaphore;
 	
 	
 	public static void main( String args[] ) throws Exception {
@@ -49,17 +51,20 @@ public class CustomServer {
 		serverSocket = new DatagramSocket( mySettings.getPort() );
 		
 		executor = Executors.newFixedThreadPool(50);
+		semaphore = false;
 		
 		/**
 		 * Declaracao das Threads
 		 */
-		LogThread logThread = new LogThread( logQueue );
+		LogThread logThread = new LogThread( logQueue, semaphore );
 		
-		ExecutorThread executorThread = new ExecutorThread( serverSocket, logQueue, executeQueue, context, observers );
+		ExecutorThread executorThread = new ExecutorThread( serverSocket, logQueue, executeQueue, context, observers, semaphore );
 				
 		ServerRecieveThread recieveThread = new ServerRecieveThread( serverSocket, executeQueue );
 		
 		GrpcThread grpcServerThread = new GrpcThread( logQueue, executeQueue, context, grpcServerSettings, observers );
+		
+		SnapshotThread snapshotThread = new SnapshotThread( context, semaphore );
 		
 		/**
 		 * Execucao das Threads
@@ -68,6 +73,8 @@ public class CustomServer {
 		executor.execute( executorThread );
 		executor.execute( recieveThread );
 		executor.execute( grpcServerThread );
+		executor.execute( snapshotThread );
+		
 	}
 
 }
